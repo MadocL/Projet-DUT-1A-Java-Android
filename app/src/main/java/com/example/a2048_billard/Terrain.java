@@ -48,3 +48,5 @@ public class Terrain {
 		return (int) Math.sqrt(Math.pow(EcartBoulesPosX(b1,b2), 2) + Math.pow(EcartBoulesPosY(b1,b2), 2));
 	}
 }
+
+//TODO: fonction qui capte le doigt du joueur lors d'un tir et appelle la fonction tirer
