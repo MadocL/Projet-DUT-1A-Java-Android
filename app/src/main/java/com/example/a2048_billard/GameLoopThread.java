@@ -1,4 +1,7 @@
+package com.example.a2048_billard;
+
 import com.example.a2048_billard.Boule;
+import com.example.a2048_billard.Terrain;
 
 import java.util.ArrayList;
 
@@ -13,29 +16,23 @@ public class GameLoopThread extends Thread
 
     private boolean running = false; // état du thread, en cours ou non
 
-    // défini l'état du thread : true ou false
-    public void setRunning(boolean run) {
+    //setter
+    private void setRunning(boolean run) {
         running = run;
     }
 
-    public void deplacerBoule(ArrayList<Boule> sesBoules){
-        //TODO : parcoure le tableau de boules et les déplace lorsque leur vitesse n'est pas nulle
-    }
+    //TODO : faire des tests du thread (c'est la boucle de jeu qui fait les vérifs de colision, de vitesse, et les affichages graphiques en permanance)
+    //TODO : gérer la fin de la partie
 
-    /*TODO : fonction lorsque deux boules se percutent (ou vont elles ? perdent elles leur NRJ cinétique ?)
-    TODO : faire des tests du thread (c'est la boucle de jeu qui fera les vérifs de colision, de vitesse, et les affichages graphiques en permanance)
-    TODO : fonction qui fait décélérer une boule lorsqu'elle a de la vitesse
-    TODO : fonction qui donne le bon angle lorsqu'une boule percute un mur (ça fait un doublon avec la première fonction)
-     */
-
-
-    // démarrage du thread
     @Override
-    public void run()
+    public void run() //démarrage du thread
     {
+        Terrain partie = new Terrain();
         // déclaration des temps de départ et de pause
         long startTime;
         long sleepTime;
+        setRunning(true);
+        partie.nouvelleBoule();
 
         // boucle tant que running est vrai
         // il devient faux par setRunning(false), notamment lors de l'arrêt de l'application
@@ -43,18 +40,25 @@ public class GameLoopThread extends Thread
         {
             // horodatage actuel
             startTime = System.currentTimeMillis();
-
-
+            partie.handleInput();
+            partie.update();
+            //clear le canvas
+            partie.dessiner();
+            if (! partie.BallsAreMoving() && partie.isBouleTiree()){
+                partie.nouvelleBoule();
+            }
 
 
             // Calcul du temps de pause, et pause si nécessaire
             // afin de ne réaliser le travail ci-dessus que X fois par secondes
             sleepTime = SKIP_TICKS-(System.currentTimeMillis() - startTime);
-            try {
-                if (sleepTime >= 0) {sleep(sleepTime);}
+            if (sleepTime >= 0) {
+                try {
+                    Thread.sleep(sleepTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            catch (Exception e) {}
         }
     }
-
 }
